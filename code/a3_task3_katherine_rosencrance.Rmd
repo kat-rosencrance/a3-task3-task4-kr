@@ -1,0 +1,28 @@
+---
+title: "Santa Barbara Urchins"
+author: "Katherine Rosencrance"
+date: "10/25/2021"
+output: html_document
+---
+
+# Overview
+
+This code wrangles and visualizes data for red and purple urchins obtained by Santa Barbara Coastal Long Term Ecological Research program divers. These data were collected in 2020 along 5 different long-term kelp removal sites. It has been wrangled to draw conclusions about
+
+**Data Citation** Santa Barbara Coastal LTER and D. Reed. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b (Accessed 2021-10-25).
+
+#Setup
+Attach the appropriate packages.
+```{r setup }
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(here)
+
+```
+
+
+#Read in the Data
+```{r}
+urchins <- read_csv(here("data", "urchins.csv"))
+```
+
