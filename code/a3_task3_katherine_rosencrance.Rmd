@@ -14,15 +14,47 @@ This code wrangles and visualizes data for red and purple urchins obtained by Sa
 #Setup
 Attach the appropriate packages.
 ```{r setup }
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE) #we do not want messages or warnings showing up in our entire html
 library(tidyverse)
 library(here)
+library(janitor)
+
 
 ```
 
 
 #Read in the Data
+Read in the data and change all the column titles to be in lower_snake_case.
 ```{r}
-urchins <- read_csv(here("data", "urchins.csv"))
+urchins <- read_csv(here("data", "urchins.csv")) %>% 
+  clean_names()           #convert to lower_snake_case
 ```
+
+# Wrangle and Visualize the Data
+Create a histogram to compare the distribution of sizes between red and purple urchins
+
+### Histogram of Purple and Red Sea Urchin Size 
+```{r}
+ggplot(data = urchins,
+       aes(x = size, fill = common_name))+
+  scale_fill_manual(values = c("purple", "red"), name = "Common name") +
+         geom_histogram(bins = 10) +
+  facet_wrap(~common_name) +
+  labs( x = "Diameter (cm)", y = "Number of Urchins", title = "Red and Purple Urchin Size Distribution")
+
+```
+Figure 1. 
+
+
+### Table with SUmmary Statistics
+```{r}
+urchins %>% 
+  group_by(common_name) %>% 
+  summarize(mean_size = mean(size, na.rm = TRUE),
+            median_size = median(size, na.rm = TRUE),
+            sd_size = sd(size, na.rm = TRUE),
+            Sample_size = count(size, na.rm = TRUE))
+            
+```
+
 
