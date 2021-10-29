@@ -1,0 +1,73 @@
+---
+title: "Santa Barbara Urchins Task 4"
+author: "Katherine Rosencrance"
+date: "10/29/2021"
+output: html_document
+---
+## Overview
+
+## Setup
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warnings = FALSE)
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(kableExtra)
+library(lubridate)
+
+
+```
+
+
+## Read in the Data
+```{r}
+urchins <- read_csv(here("data", "urchins.csv")) %>% 
+                      clean_names()
+```
+## Wrangle the Data
+```{r}
+purple_urchins_napl_10 <- urchins %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date)) %>% 
+  filter(common_name == "Purple Urchin", site == "NAPL", year == 2010)
+  
+```
+
+## Exploratory Graphs
+```{r}
+ggplot(data = purple_urchins_napl_10, aes(x = size))+
+  geom_histogram(color = "black", fill = "purple") +
+  facet_wrap(~treatment)+
+  labs(x = "Diameter (cm)",
+       y = "Number of Urchins",
+       title = "Purple Urchins found at Naples Reef in 2010")
+
+```
+```{r}
+ggplot(data = purple_urchins_napl_10, aes(sample = size))+
+  stat_qq() +
+  facet_wrap(~treatment)
+```
+
+### Main Takeaways
+
+
+
+## Summary Statistics Table
+```{r}
+purple_urchins_napl_10_summary <- purple_urchins_napl_10 %>% 
+  group_by(treatment) %>% 
+  summarize(mean_size = mean(size),
+            median_size = median(size),
+            sd_size = sd(size),
+            sample_size = n()) %>% 
+  kbl(caption = "Table 1: Summary Statistics of Purple Urchins from Naples Reef in 2010",
+      col.names = c("Treatment Type", "Mean(cm)", "Median(cm)", "Standard Deviation(cm)", "Sample Size"), 
+digits = 1) %>% 
+  kable_minimal()
+
+purple_urchins_napl_10_summary
+
+```
+## End Task
