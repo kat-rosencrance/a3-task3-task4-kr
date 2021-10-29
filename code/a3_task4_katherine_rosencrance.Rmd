@@ -2,13 +2,19 @@
 title: "Santa Barbara Urchins Task 4"
 author: "Katherine Rosencrance"
 date: "10/29/2021"
-output: html_document
+output: 
+  html_document: 
+    theme: sandstone
 ---
 ## Overview
+This document provides code and analyses of data collected by Santa Barbara Coastal Long Term Ecological Research program divers on Purple Urchins. These data were collected in 2020 along 5 different long-term kelp removal sites. It has been wrangled to draw conclusions about size distribution in relation to annual kelp removal experimental sites, specifically Naples Reef in 2010.
+
+**Date Citation:** Santa Barbara Coastal LTER and D. Reed. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b (Accessed 2021-10-25).
 
 ## Setup
-```{r setup}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warnings = FALSE)
+Attach appropriate packages 
+```{r setup, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning= FALSE)
 
 library(tidyverse)
 library(here)
@@ -26,31 +32,40 @@ urchins <- read_csv(here("data", "urchins.csv")) %>%
                       clean_names()
 ```
 ## Wrangle the Data
+Manipulate the dataframe to only include observations of Purple Urchin from 2010 at Naples Reef and convert the date to an easy to use format.
 ```{r}
 purple_urchins_napl_10 <- urchins %>% 
-  mutate(date = mdy(date)) %>% 
+  mutate(date = mdy(date)) %>%    ## use mdy because that is how the date data is given
   mutate(year = year(date)) %>% 
   filter(common_name == "Purple Urchin", site == "NAPL", year == 2010)
   
 ```
 
 ## Exploratory Graphs
+Create graphs to explore difference in size distribution between control and kelp removal sites.
+
+### Histogram
 ```{r}
 ggplot(data = purple_urchins_napl_10, aes(x = size))+
   geom_histogram(color = "black", fill = "purple") +
-  facet_wrap(~treatment)+
+  facet_wrap(~treatment)+   ## sort by annual and control
   labs(x = "Diameter (cm)",
        y = "Number of Urchins",
        title = "Purple Urchins found at Naples Reef in 2010")
 
 ```
-```{r}
+
+
+### QQ Plot
+```{r} 
+## QQ plots compare distributions by plotting two sets of quantiles against one another
 ggplot(data = purple_urchins_napl_10, aes(sample = size))+
   stat_qq() +
   facet_wrap(~treatment)
 ```
 
 ### Main Takeaways
+Upon looking at these graphs, my main takeaway is that the urchins at the annual removal sites have a lower central tendency than the urchins from the control site. Overall, urchin size shows a similar trend at both sites in that most of the urchins range from 2.5-5 centimeters.
 
 
 
@@ -62,8 +77,8 @@ purple_urchins_napl_10_summary <- purple_urchins_napl_10 %>%
             median_size = median(size),
             sd_size = sd(size),
             sample_size = n()) %>% 
-  kbl(caption = "Table 1: Summary Statistics of Purple Urchins from Naples Reef in 2010",
-      col.names = c("Treatment Type", "Mean(cm)", "Median(cm)", "Standard Deviation(cm)", "Sample Size"), 
+  kbl(caption = "Table 1: Summary Statistics of Purple Urchins from Naples Reef in 2010. Annual treatment type refers to an experimental site where Macrocystis pyriferais was removed from an adjacent plot once each winter and allowed to re-colonize over the course of the year. Control sites are where the Macrocystis pyriferais was left intact during the experiment. The values representcalculated summary statistics for each site. ",
+      col.names = c("Treatment Type", "Mean Size(cm)", "Median Size(cm)", "Standard Deviation(cm)", "Sample Size"), 
 digits = 1) %>% 
   kable_minimal()
 
