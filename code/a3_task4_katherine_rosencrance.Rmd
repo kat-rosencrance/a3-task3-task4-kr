@@ -7,9 +7,9 @@ output:
     theme: sandstone
 ---
 ## Overview
-This document provides code and analyses of data collected by Santa Barbara Coastal Long Term Ecological Research program divers on Purple Urchins. These data were collected in 2020 along 5 different long-term kelp removal sites. It has been wrangled to draw conclusions about size distribution in relation to annual kelp removal experimental sites, specifically Naples Reef in 2010.
+This document provides code and analyses of data collected by Santa Barbara Coastal Long Term Ecological Research program divers on Purple Urchins. These data were collected from 2008- 2020 along 5 different long-term kelp removal sites. It has been wrangled to draw conclusions about size distribution in relation to annual kelp removal experimental sites, specifically Naples Reef in 2010.
 
-**Date Citation:** Santa Barbara Coastal LTER and D. Reed. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b (Accessed 2021-10-25).
+**Data Citation:** Santa Barbara Coastal LTER and D. Reed. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b (Accessed 2021-10-25).
 
 ## Setup
 Attach appropriate packages 

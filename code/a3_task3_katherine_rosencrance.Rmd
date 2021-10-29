@@ -1,19 +1,21 @@
 ---
-title: "Santa Barbara Urchins"
+title: "Santa Barbara Urchins Task 3"
 author: "Katherine Rosencrance"
 date: "10/25/2021"
-output: html_document
+output: 
+  html_document: 
+    theme: sandstone
 ---
 
 # Overview
 
-This code wrangles and visualizes data for red and purple urchins obtained by Santa Barbara Coastal Long Term Ecological Research program divers. These data were collected in 2020 along 5 different long-term kelp removal sites. It has been wrangled to draw conclusions about
+This code wrangles and visualizes data for red and purple urchins obtained by Santa Barbara Coastal Long Term Ecological Research program divers. These data were collected from 2008-2020 along 5 different long-term kelp removal sites. It has been wrangled to draw conclusions about the difference in size between sites.
 
 **Data Citation** Santa Barbara Coastal LTER and D. Reed. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b (Accessed 2021-10-25).
 
-#Setup
+# Setup
 Attach the appropriate packages.
-```{r setup }
+```{r setup, message = FALSE }
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE) #we do not want messages or warnings showing up in our entire html
 library(tidyverse)
 library(here)
@@ -24,22 +26,23 @@ library(lubridate)
 ```
 
 
-#Read in the Data
+# Read in the Data
 Read in the data and change all the column titles to be in lower_snake_case.
 ```{r}
 urchins <- read_csv(here("data", "urchins.csv")) %>% 
   clean_names()           #convert to lower_snake_case
 ```
 
-# Wrangle and Visualize the Data
-Create a histogram to compare the distribution of sizes between red and purple urchins
+# Section 1
+## Wrangle and Visualize the Data
+Create a histogram to compare the distribution of sizes between red and purple urchins.
 
 ### Histogram of Purple and Red Sea Urchin Size 
 ```{r}
 ggplot(data = urchins,
        aes(x = size, fill = common_name))+
-  scale_fill_manual(values = c("purple", "red"), name = "Common name") +
-         geom_histogram(bins = 10, color = "black") +
+  scale_fill_manual(values = c("purple", "red"), name = "Common name") + ## use this to choose specific colors for each factor
+         geom_histogram(bins = 10, color = "black") +  ## change bin size from default
   facet_wrap(~common_name) +
   labs( x = "Diameter (cm)",
         y = "Number of Urchins",
@@ -49,7 +52,9 @@ ggplot(data = urchins,
 theme(plot.title = element_text (face = "bold", hjust = 0.5))
 
 ```
-Figure 1. 
+
+
+Figure 1. Size distribution of sea urchins collected from 2008-2020. The bars represent the number of urchins recorded at each diameter. The diameter is recorded in centimeters to the nearest 0.5 cm for 50 red and 50 purple sea urchins located in 40 m x 2 m transects in each sampling plot. Purple urchins tend to be smaller than red urchins, as there are a lot more recorded in the smaller diameter bins.
 
 
 ### Table with Summary Statistics
@@ -61,7 +66,7 @@ urchins %>%
             sd_size = sd(size, na.rm = TRUE),
             sample_size = n()) %>% 
 
-kbl(caption = "Table 1: Summary Statistics of Red and Purple Urchin Size",
+kbl(caption = "Table 1: Summary Statistics of Red and Purple Urchin Size. Diameter of the urchin is recorded in centimeters to the nearest 0.5 cm for 50 red and 50 purple sea urchins located in 40 m x 2 m transects in each sampling plot. The summary statistics have been calculated and put into a table to compare between species.",
     col.names = c("Common Name",
                   "Mean (cm)",
                   "Median (cm)",
@@ -72,7 +77,14 @@ kbl(caption = "Table 1: Summary Statistics of Red and Purple Urchin Size",
 
             
 ```
-## Summary Statistics for Purple Urchins only
+### Main Takeaways
+Red Urchins tend to be bigger in size than Purple urchins. This is clearly seen in the distribution graph as well as the values of mean and median when comparing both species, especially when you see that the percent difference in their means is about 41%. Red urchins also have more dispersion relative to their mean, which is reflected in their higher standard deviation. Red urchins are closer to being normally distributed than purple urchins are. This can be seen in how the purple urchins have a larger number at the lower end of the diameter scale, while red urchins display a gradual increase and peak closer to the middle of the scale. 
+
+# Section 2
+
+## Wrangle and Visualize Data
+
+### Summary Statistics for Purple Urchins only
 ```{r}
 purple_urchins <- urchins %>% 
   filter(common_name == "Purple Urchin") %>% 
@@ -87,16 +99,15 @@ purple_urchins <- urchins %>%
   
 ```
 
+### Summary Statistics Table
 ```{r}
 purple_urchins_table <- purple_urchins %>% 
   group_by(site_full, year) %>% 
-  summarize(sample_size = n())
-
-purple_urchins_table
+  summarize(sample_size = n()) #not included in final document but used to create graph below
 
 ```
 
-## Graph Representing Summary Statistics
+### Graph Representing Summary Statistics
 ```{r}
 ggplot(data = purple_urchins_table, aes( x = year, y = sample_size)) +
         geom_line(stat = "identity", size = 1)+
@@ -111,7 +122,14 @@ ggplot(data = purple_urchins_table, aes( x = year, y = sample_size)) +
   scale_x_continuous(breaks = seq(2008,2020,1))
 
 ```
-Figure 2. ADD DESCRIPTION
+
+
+Figure 2. Number of purple urchins recorded at each site from 2008-2020. Each line indicates a different study site where urchins were recorded. It clearly displays a strong decline in urchins seen from 2011-2013.
+
+### Graph Analysis
+I do think that this graph represents changes in the purple urchin population, however I think it's important to also consider sample size when determining if a trend is indicative of the entire population. If you have a very small sample size then the likelihood of it actually representing the entire population is small. In addition, human error must be taken into account. If different people were conducting the study at different times, this might skew the data in a certain way.
+
+# End task
 
 
 
