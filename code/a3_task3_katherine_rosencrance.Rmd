@@ -18,7 +18,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE) #we do not 
 library(tidyverse)
 library(here)
 library(janitor)
-
+library(kableExtra)
+library(lubridate)
 
 ```
 
@@ -38,9 +39,14 @@ Create a histogram to compare the distribution of sizes between red and purple u
 ggplot(data = urchins,
        aes(x = size, fill = common_name))+
   scale_fill_manual(values = c("purple", "red"), name = "Common name") +
-         geom_histogram(bins = 10) +
+         geom_histogram(bins = 10, color = "black") +
   facet_wrap(~common_name) +
-  labs( x = "Diameter (cm)", y = "Number of Urchins", title = "Red and Purple Urchin Size Distribution")
+  labs( x = "Diameter (cm)",
+        y = "Number of Urchins",
+        title = "Red and Purple Urchin Size Distribution")+
+
+## Title adjustment
+theme(plot.title = element_text (face = "bold", hjust = 0.5))
 
 ```
 Figure 1. 
@@ -50,11 +56,27 @@ Figure 1.
 ```{r}
 urchins %>% 
   group_by(common_name) %>% 
-  summarize(mean_size = mean(size, na.rm = TRUE),
+  summarize(mean_size = mean(size, na.rm = TRUE),   ## Create summary statistics including mean, standard deviation, and sample size
             median_size = median(size, na.rm = TRUE),
             sd_size = sd(size, na.rm = TRUE),
-            Sample_size = count(size, na.rm = TRUE))
+            sample_size = n()) %>% 
+
+kbl(caption = "Table 1: Summary Statistics of Red and Purple Urchin Size",
+    col.names = c("Common Name",
+                  "Mean (cm)",
+                  "Median (cm)",
+                  "Standard Deviation (cm)",
+                  "Sample Size"),
+    digits = 1) %>% 
+  kable_minimal()
+
             
 ```
+```{r}
+
+```
+
+
+
 
 
